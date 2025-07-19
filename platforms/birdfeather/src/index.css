@@ -15,7 +15,7 @@
 
 /* Dark Theme */
 [data-theme='dark'] {
-  --color-primary: rgb(161 161 170); /* zinc-400 equivalent RGB */
+  --color-primary: rgb(8, 8, 8); /* zinc-400 equivalent RGB */
   --color-secondary: rgb(113 113 122); /* zinc-500 equivalent RGB */
   --color-accent: rgb(129 140 248); /* indigo-400 equivalent RGB */
   --color-text-default: rgb(244 244 245); /* zinc-100 equivalent RGB */
@@ -24,7 +24,7 @@
 
 /* Light Theme */
 [data-theme='light'] {
-  --color-primary: rgb(82 82 91); /* zinc-600 equivalent RGB */
+  --color-primary: rgb(244, 244, 244); /* zinc-600 equivalent RGB */
   --color-secondary: rgb(212 212 216); /* zinc-300 equivalent RGB */
   --color-accent: rgb(79 70 229); /* indigo-600 equivalent RGB */
   --color-text-default: rgb(39 39 42); /* zinc-800 equivalent RGB */
@@ -66,4 +66,6 @@ body {
   visibility: hidden;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
+
+  font-family: "helvetica neue", Helvetica, Arial, sans-serif
 }
