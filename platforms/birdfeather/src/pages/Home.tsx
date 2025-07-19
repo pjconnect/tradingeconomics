@@ -51,6 +51,8 @@ export default function Home() {
                 setIndicators(data);
             })
             .catch(error => {
+                setIndicators([]);
+                setHistoricalData([]);
                 console.error('Error fetching country data:', error);
             })
             .finally(() => {
