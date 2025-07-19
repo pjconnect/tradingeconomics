@@ -1,4 +1,4 @@
-import { useRef, useEffect, Fragment } from "react";
+import { useRef, useEffect, Fragment, useState } from "react";
 import { createChart, ColorType, LineSeries, type TimeChartOptions, type DeepPartial } from 'lightweight-charts';
 import type { HistoricalData } from "../types";
 import LoadingSpinner from "./LoadingSpinner";
@@ -15,6 +15,7 @@ const LightChart: React.FC<LightChartProps> = ({
     selectedIndicator
 }) => {
     const chartContainerRef = useRef<HTMLDivElement>(null);
+    const chartRef = useRef<any>(null);
 
     // Initialize and update chart when historical data changes
     useEffect(() => {
@@ -30,6 +31,8 @@ const LightChart: React.FC<LightChartProps> = ({
 
         // Create chart instance
         const chart = createChart(chartContainerRef.current, chartOptions) as any;
+        chartRef.current = chart;
+        
         if (chart === null) {
             return;
         }
@@ -46,16 +49,29 @@ const LightChart: React.FC<LightChartProps> = ({
         // Set the data
         lineSeries.setData(formattedData);
 
+        // Add resize event listener
+        const handleResize = () => {
+            if (chartContainerRef.current && chartRef.current) {
+                chartRef.current.applyOptions({ 
+                    width: chartContainerRef.current.clientWidth 
+                });
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+
         // Cleanup function
         return () => {
-            chart.remove();
+            window.removeEventListener('resize', handleResize);
+            if (chartRef.current) {
+                chartRef.current.remove();
+            }
         };
     }, [historicalData]);
 
     if (!selectedIndicator) {
         return <Fragment />;
     }
-
 
     if (loading) {
         return (
@@ -67,19 +83,18 @@ const LightChart: React.FC<LightChartProps> = ({
 
     if (historicalData.length === 0) {
         return (
-            <div className="my-20  text-center p-8 bg-card rounded-lg">
+            <div className="my-20 text-center p-8 bg-card rounded-lg">
                 <p>No historical data available for {selectedIndicator}</p>
             </div>
         );
     }
 
     return (
-        <div className="my-20  flex justify-center items-center h-80 rounded-lg">
+        <div className="my-20 flex justify-center items-center h-80 rounded-lg">
             <div ref={chartContainerRef} className="w-full h-[400px]"></div>
         </div>
     );
 };
-
 
 const defaultChartOptions = {
     layout: {
