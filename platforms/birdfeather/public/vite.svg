@@ -4,14 +4,14 @@
     <defs>
         <linearGradient id="IconifyId1813088fe1fbc01fb466" x1="-.828%" x2="57.636%" y1="7.652%"
             y2="78.411%">
-            <stop offset="0%" stop-color="#18181b"></stop>
-            <stop offset="100%" stop-color="#18181b"></stop>
+            <stop offset="0%" stop-color="white"></stop>
+            <stop offset="100%" stop-color="white"></stop>
         </linearGradient>
         <linearGradient id="IconifyId1813088fe1fbc01fb467" x1="43.376%" x2="50.316%" y1="2.242%"
             y2="89.03%">
-            <stop offset="0%" stop-color="#d4d4d8"></stop>
-            <stop offset="50%" stop-color="#d4d4d8"></stop>
-            <stop offset="100%" stop-color="#d4d4d8"></stop>
+            <stop offset="0%" stop-color="#9333ea"></stop>
+            <stop offset="50%" stop-color="#9333ea"></stop>
+            <stop offset="100%" stop-color="#4f46e5"></stop>
         </linearGradient>
     </defs>
     <path fill="url(#IconifyId1813088fe1fbc01fb466)"
