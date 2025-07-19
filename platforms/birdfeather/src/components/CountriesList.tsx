@@ -4,19 +4,27 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 
 export default function CountriesList({ onClick }: { onClick: (data: { country: string, icon: string }) => void }) {
     const [selectedCountry, setSelectedCountry] = useState<string>("");
+    const [searchTerm, setSearchTerm] = useState<string>("");
+    
+    // Filter countries based on search term
+    const filteredCountries = countries.filter(country => 
+        country.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
         <section className="">
-            <div className="flex justify-between items-center mb-4">
-                <div>
+            <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center mb-4">
+                <div className="w-full md:w-1/3">
                     <h2 className="text-2xl">Select a Country</h2>
                     <p className="text-sm opacity-60">Choose a country to view its economic indicators</p>
                 </div>
-                <div className="relative">
+                <div className="relative w-full md:w-2/5 min-w-[240px]">
                     <input
                         type="text"
                         placeholder="Search countries..."
-                        className="py-2 px-4 pr-10 bg-primary text-default decoration-default border rounded-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="py-2 px-4 w-full pr-10 bg-primary text-default decoration-default border border-accent rounded-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                 </div>
             </div>
@@ -33,8 +41,6 @@ export default function CountriesList({ onClick }: { onClick: (data: { country: 
                     <FaAngleLeft className="text-default" />
                 </button>
 
-               
-
                 <button
                     className="absolute cursor-pointer right-0 top-1/2 transform -translate-y-1/2 p-3 rounded-full shadow-md bg-primary z-10 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
                     onClick={() => {
@@ -46,11 +52,11 @@ export default function CountriesList({ onClick }: { onClick: (data: { country: 
                     <FaAngleRight className="text-default" />
                 </button>
 
-                 <div
+                <div
                     id="countries-container"
                     className="flex overflow-x-auto mx-2 py-2 gap-4 scrollbar-hide snap-x snap-mandatory"
                 >
-                    {countries.map((country, index) => (
+                    {filteredCountries.map((country, index) => (
                         <div
                             onClick={() => { setSelectedCountry(country.name); onClick({ country: country.name, icon: country.emoji }); }}
                             key={index}
