@@ -19,4 +19,25 @@ export default class TradeconAPI {
         const response = await axios.get(url, { headers });
         return response.data;
     }
+
+    static async search(searchParam: string, options: {
+        sources?: string[],
+        perPage?: number,
+        page?: number
+    } = {}) {
+        const {
+            sources = ['wb', 'fred', 'comtrade'],
+            perPage = 50,
+            page = 0
+        } = options;
+
+        const sourcesString = sources.join(',');
+        const timestamp = Date.now();
+        const url = `https://brains.tradingeconomics.com/v2/search/${sourcesString}?q=${encodeURIComponent(searchParam)}&pp=${perPage}&p=${page}&_=${timestamp}&stance=2`;
+
+        const headers = { 'Authorization': `${apiKey}` };
+        const response = await axios.get(url, { headers });
+        return response.data;
+    }
+
 }
