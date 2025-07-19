@@ -1,5 +1,5 @@
-# Birdeye view of your favorite stocks - Sample Project
-## This use Trading Economics API
+# Birdeye view of your favorite stocks, bonds and other indecies
+## Using Trading Economics API
 
 ## Tech Stack
-- React, TypeScript
+- Vite, React, TypeScript
