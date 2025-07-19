@@ -5,6 +5,9 @@ import { createChart, ColorType, LineSeries } from 'lightweight-charts';
 import Logo from "../components/Logo";
 import CountriesList from "../components/CountriesList";
 import type { HistoricalData, Indicator } from "../types";
+import Footer from "../components/Footer";
+import LightChart from "../components/LightChart";
+import IndicatorsTable from "../components/IndicatorsTable";
 
 export default function Home() {
     const [loading, setLoading] = useState(false);
@@ -12,19 +15,20 @@ export default function Home() {
     const [chartLoading, setChartLoading] = useState(false);
     const [indicators, setIndicators] = useState<Indicator[]>([]);
     const [selectedIndicator, setSelectedIndicator] = useState<string>("");
-    const [selectedCountry, setSelectedCountry] = useState<string>("");
+    const [selectedCountry, setSelectedCountry] = useState<{country: string, icon: string} | null>(null);
     const chartContainerRef = useRef<HTMLDivElement>(null);
 
-    function getDataByCountry(country: string) {
+    function getDataByCountry(data: {country: string, icon: string}) {
         setLoading(true);
-        setSelectedCountry(country);
+        setSelectedCountry(data);
 
-        TradeconAPI.getIndicatorsByCountry(country)
+        TradeconAPI.getIndicatorsByCountry(data.country)
             .then(data => {
                 setIndicators(data);
             })
             .catch(error => {
                 setIndicators([]);
+                setSelectedIndicator("");
                 console.error('Error fetching country data:', error);
             })
             .finally(() => {
@@ -34,9 +38,14 @@ export default function Home() {
 
     function getHistoricalData(indicator: Indicator) {
         setChartLoading(true);
+        setHistoricalData([]);
         setSelectedIndicator(indicator.Category);
 
-        TradeconAPI.getHistoricalIndicator(selectedCountry, indicator.Category.toLowerCase())
+        if (!selectedCountry) {
+            return;
+        }
+
+        TradeconAPI.getHistoricalIndicator(selectedCountry?.country, indicator.Category.toLowerCase())
             .then(data => {
                 console.log('Historical Data:', data);
                 setHistoricalData(data);
@@ -54,160 +63,44 @@ export default function Home() {
         return new Date(dateString).toLocaleDateString();
     };
 
-    // Initialize and update chart when historical data changes
-    useEffect(() => {
-        if (!historicalData.length || !chartContainerRef.current) return;
-
-        chartContainerRef.current.innerHTML = ''; // Clear previous chart
-
-        const chartOptions = {
-            width: chartContainerRef.current.clientWidth,
-            height: 400,
-            layout: {
-                background: { type: ColorType.Solid, color: 'transparent' },
-                textColor: 'rgba(33, 56, 77, 1)',
-            },
-            grid: {
-                vertLines: {
-                    color: 'rgba(197, 203, 206, 0.4)',
-                },
-                horzLines: {
-                    color: 'rgba(197, 203, 206, 0.4)',
-                },
-            },
-            timeScale: {
-                timeVisible: true,
-                secondsVisible: false,
-            },
-            rightPriceScale: {
-                borderColor: 'rgba(197, 203, 206, 1)',
-            },
-        };
-
-        // Create chart instance
-        const chart = createChart(chartContainerRef.current, chartOptions) as any;
-        if (chart === null) {
-            return;
-        }
-
-        // Format data for the chart
-        const formattedData = historicalData.map(item => ({
-            time: item.DateTime.split('T')[0], // Format: YYYY-MM-DD
-            value: item.Value
-        }));
-
-        // Add line series to the chart
-        const lineSeries = chart?.addSeries?.(LineSeries);
-
-        // Set the data
-        lineSeries.setData(formattedData);
-
-    }, [historicalData]);
+    function HomeTitle({title}: {title: string}){
+        return <h2 className="text-2xl p-4">{`${selectedCountry?.icon} ${selectedCountry?.country}`} <span className="opacity-80 font-thin">: {title}</span> </h2>;
+    }
 
     return (
-        <div className="min-h-screen bg-background-default text-text-default transition-colors duration-300">
-            <header className="bg-primary p-4 shadow-lg">
-                <div className="container mx-auto flex justify-between items-center">
-                    <Logo />
-                    <ThemeSwitcher />
-                </div>
-            </header>
+        <div className=" bg-background-default text-text-default transition-colors duration-300">
+            <div className="min-h-screen">
 
-            <main className="container mx-auto py-8 px-4">
+                <header className="bg-primary p-4 shadow-lg">
+                    <div className="container mx-auto flex justify-between items-center">
+                        <Logo />
+                        <ThemeSwitcher />
+                    </div>
+                </header>
 
-                {/* Countries List Section */}
-                <CountriesList onClick={getDataByCountry} />
-                
-                {/* Historical Data Chart */}
-                {selectedIndicator && (
-                    <section className="mb-8">
-                        <h2 className="text-2xl font-bold mb-4">
-                            {selectedIndicator} Historical Data for {selectedCountry}
-                        </h2>
+                <main className="container mx-auto py-8 px-4">
 
-                        {chartLoading && (
-                            <div className="flex justify-center items-center h-80">
-                                <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
-                            </div>
-                        )}
+                    {/* Countries List Section */}
+                    <CountriesList onClick={getDataByCountry} />
 
-                        {!chartLoading && historicalData.length > 0 && (
-                            <div className="bg-card p-4 rounded-lg shadow-md">
-                                <div ref={chartContainerRef} className="w-full h-[400px]"></div>
-                            </div>
-                        )}
+                    {/* Historical Data Chart */}
+                    <LightChart
+                        historicalData={historicalData}
+                        loading={chartLoading}
+                        selectedIndicator={selectedIndicator}
+                    />
 
-                        {!chartLoading && historicalData.length === 0 && (
-                            <div className="text-center p-8 bg-card rounded-lg">
-                                <p>No historical data available for {selectedIndicator}</p>
-                            </div>
-                        )}
-                    </section>
-                )}
-
-                {/* Indicators by the selected country */}
-                {selectedCountry && (
-                    <section className="mb-8 max-h-[500px] overflow-auto">
-                        <h2 className="text-2xl font-bold mb-4">Indicators for {selectedCountry}</h2>
-
-                        {loading && (
-                            <div className="flex justify-center items-center h-40">
-                                <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
-                            </div>
-                        )}
-
-                        {!loading && !indicators.length && (
-                            <div className="text-center p-8 bg-card rounded-lg">
-                                <p>No indicators found for {selectedCountry}</p>
-                            </div>
-                        )}
-
-                        {!loading && indicators.length > 0 && (
-                            <div className="overflow-x-auto shadow-md rounded-lg">
-                                <table className="min-w-full bg-card">
-                                    <thead className="bg-primary/10">
-                                        <tr>
-                                            <th className="py-3 px-4 text-left font-medium">Category</th>
-                                            <th className="py-3 px-4 text-left font-medium">Latest Value</th>
-                                            <th className="py-3 px-4 text-left font-medium">Date</th>
-                                            <th className="py-3 px-4 text-left font-medium">Previous Value</th>
-                                            <th className="py-3 px-4 text-left font-medium">Unit</th>
-                                            <th className="py-3 px-4 text-left font-medium">Frequency</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-200">
-                                        {indicators.map((indicator, index) => (
-                                            <tr
-                                                key={index}
-                                                onClick={() => getHistoricalData(indicator)}
-                                                className={`hover:bg-primary/5 cursor-pointer ${selectedIndicator === indicator.Category ? 'bg-primary/10' : ''}`}
-                                            >
-                                                <td className="py-3 px-4">
-                                                    <div className="font-medium">{indicator.Category}</div>
-                                                    <div className="text-sm text-muted">{indicator.CategoryGroup}</div>
-                                                </td>
-                                                <td className="py-3 px-4 font-medium">
-                                                    {indicator.LatestValue}
-                                                </td>
-                                                <td className="py-3 px-4">
-                                                    {formatDate(indicator.LatestValueDate)}
-                                                </td>
-                                                <td className="py-3 px-4">
-                                                    {indicator.PreviousValue}
-                                                    <div className="text-xs text-muted">{formatDate(indicator.PreviousValueDate)}</div>
-                                                </td>
-                                                <td className="py-3 px-4">{indicator.Unit}</td>
-                                                <td className="py-3 px-4">{indicator.Frequency}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
-
-                    </section>
-                )}
-            </main>
+                    {/* Indicators by the selected country */}
+                    <IndicatorsTable
+                        indicators={indicators}
+                        loading={loading}
+                        selectedIndicator={selectedIndicator}
+                        selectedCountry={selectedCountry}
+                        onSelectIndicator={getHistoricalData}
+                    />
+                </main>
+            </div>
+            <Footer />
         </div>
     );
 }

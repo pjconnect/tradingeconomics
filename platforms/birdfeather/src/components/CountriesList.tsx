@@ -1,37 +1,72 @@
 import { useState } from "react";
 import countries from "../data/listofcountries.json";
+import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 
-export default function CountriesList({ onClick }: { onClick: (country: string) => void }) {
+export default function CountriesList({ onClick }: { onClick: (data: { country: string, icon: string }) => void }) {
     const [selectedCountry, setSelectedCountry] = useState<string>("");
+
     return (
-        <section className="mb-8">
+        <section className="">
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold">Indices by Countries</h2>
+                <div>
+                    <h2 className="text-2xl">Select a Country</h2>
+                    <p className="text-sm opacity-60">Choose a country to view its economic indicators</p>
+                </div>
                 <div className="relative">
                     <input
                         type="text"
                         placeholder="Search countries..."
-                        className="py-2 px-4 pr-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                        className="py-2 px-4 pr-10 bg-primary text-default decoration-default border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     />
-
                 </div>
             </div>
 
             <div className="relative">
-                <div className="flex overflow-x-auto pb-4 gap-4 scrollbar-hide">
+                <button
+                    className="absolute cursor-pointer left-0 top-1/2 transform -translate-y-1/2 p-3 rounded-full shadow-md bg-primary z-10 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    onClick={() => {
+                        const container = document.getElementById('countries-container');
+                        container?.scrollBy({ left: -200, behavior: 'smooth' });
+                    }}
+                    aria-label="Scroll left"
+                >
+                    <FaAngleLeft className="text-default" />
+                </button>
+
+               
+
+                <button
+                    className="absolute cursor-pointer right-0 top-1/2 transform -translate-y-1/2 p-3 rounded-full shadow-md bg-primary z-10 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    onClick={() => {
+                        const container = document.getElementById('countries-container');
+                        container?.scrollBy({ left: 200, behavior: 'smooth' });
+                    }}
+                    aria-label="Scroll right"
+                >
+                    <FaAngleRight className="text-default" />
+                </button>
+
+                 <div
+                    id="countries-container"
+                    className="flex overflow-x-auto mx-2 py-2 gap-4 scrollbar-hide snap-x snap-mandatory"
+                >
                     {countries.map((country, index) => (
                         <div
-                            onClick={() => { setSelectedCountry(country.name); onClick(country.name); }}
+                            onClick={() => { setSelectedCountry(country.name); onClick({ country: country.name, icon: country.emoji }); }}
                             key={index}
-                            className={`cursor-pointer flex-shrink-0 w-48 p-4 border rounded-lg shadow-sm hover:shadow-md transition-shadow ${selectedCountry === country.name ? 'bg-primary/10 border-primary' : 'bg-card'}`}
+                            className={`cursor-pointer hover:bg-accent/10 bg-primary  flex-shrink-0 w-48 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow snap-start ${selectedCountry === country.name ? 'bg-primary' : 'bg-card'}`}
                         >
                             <img src={country.image} alt={country.name} className="w-16 h-16 mx-auto mb-2" />
                             <div className="text-center">
-                                <h3 className="font-medium">{country.name}</h3>
-                                <p className="text-sm text-muted">{country.code}</p>
+                                <h3 className="text-nowrap font-medium">{country.name}</h3>
                             </div>
                         </div>
                     ))}
+                </div>
+
+                <div className="absolute inset-x-0 top-0 bottom-0 pointer-events-none">
+                    <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background to-transparent"></div>
+                    <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background to-transparent"></div>
                 </div>
             </div>
         </section>
