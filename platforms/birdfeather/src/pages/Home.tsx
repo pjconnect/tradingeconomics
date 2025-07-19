@@ -1,7 +1,6 @@
 import { ThemeSwitcher } from "../components/SwitchThemes";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import TradeconAPI from "../services/TradeconAPI";
-import { createChart, ColorType, LineSeries } from 'lightweight-charts';
 import Logo from "../components/Logo";
 import CountriesList from "../components/CountriesList";
 import type { HistoricalData, Indicator } from "../types";
@@ -16,7 +15,6 @@ export default function Home() {
     const [indicators, setIndicators] = useState<Indicator[]>([]);
     const [selectedIndicator, setSelectedIndicator] = useState<string>("");
     const [selectedCountry, setSelectedCountry] = useState<{country: string, icon: string} | null>(null);
-    const chartContainerRef = useRef<HTMLDivElement>(null);
 
     function getDataByCountry(data: {country: string, icon: string}) {
         setLoading(true);
@@ -56,15 +54,6 @@ export default function Home() {
             .finally(() => {
                 setChartLoading(false);
             });
-    }
-
-    // Format date from ISO string
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString();
-    };
-
-    function HomeTitle({title}: {title: string}){
-        return <h2 className="text-2xl p-4">{`${selectedCountry?.icon} ${selectedCountry?.country}`} <span className="opacity-80 font-thin">: {title}</span> </h2>;
     }
 
     return (
