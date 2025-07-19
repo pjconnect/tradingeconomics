@@ -1,16 +1,33 @@
+// import axios
+import axios from 'axios';
+
+
+const apiKey = import.meta.env.VITE_TRADEECONOMICS_API_KEY;
+
 export default class TradeconAPI {
- 
- 
-    static async getTradeconData() {
+
+    static async getIndicatorsByCountry(country: string) {
+        const url = 'https://api.tradingeconomics.com/country/'+country + "";
+        const headers = { 'Authorization': `${apiKey}` };
         try {
-            const response = await fetch('https://api.tradecon.com/data');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            return data;
+            const response = await axios.get(url, { headers });
+            console.log(response.data);
+            return response.data;
         } catch (error) {
-            console.error('Error fetching Tradecon data:', error);
+            console.error('Error fetching data:', error);
+            throw error;
+        }
+    }
+
+    static async getHistoricalIndicator(country: string, indicator: string) {
+        const url = `https://api.tradingeconomics.com/historical/country/${country}/indicator/${indicator}`;
+        const headers = { 'Authorization': `${apiKey}` };
+        try {
+            const response = await axios.get(url, { headers });
+            console.log(response.data);
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching historical data:', error);
             throw error;
         }
     }

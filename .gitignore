@@ -264,3 +264,6 @@ test.py
 
 python/tradingeconomics.egg-info/
 R/tradingeconomics/.RData
+platforms/birdfeather/.env
+**/.DS_Store
+.gitignore
