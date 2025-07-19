@@ -8,21 +8,21 @@ export const ThemeSwitcher = () => {
                 <li>
                     <button
                         onClick={() => setTheme('light')}
-                        className="w-8 h-8 rounded-full bg-zinc-100 hover:ring-2 ring-offset-2 ring-zinc-400 transition"
+                        className="w-8 h-8 border border-accent rounded-full bg-zinc-100 hover:ring-2 ring-offset-2 ring-zinc-400 transition"
                         aria-label="Light theme"
                     />
                 </li>
                 <li>
                     <button
                         onClick={() => setTheme('dark')}
-                        className="w-8 h-8 rounded-full bg-zinc-800 hover:ring-2 ring-offset-2 ring-zinc-400 transition"
+                        className="w-8 h-8 border border-accent rounded-full bg-zinc-800 hover:ring-2 ring-offset-2 ring-zinc-400 transition"
                         aria-label="Dark theme"
                     />
                 </li>
                 <li>
                     <button
                         onClick={() => setTheme('fancy')}
-                        className="w-8 h-8 rounded-full bg-purple-600 hover:ring-2 ring-offset-2 ring-zinc-400 transition"
+                        className="w-8 h-8 border border-accent rounded-full bg-purple-600 hover:ring-2 ring-offset-2 ring-zinc-400 transition"
                         aria-label="Fancy theme"
                     />
                 </li>

@@ -16,7 +16,7 @@ export default function CountriesList({ onClick }: { onClick: (data: { country: 
                     <input
                         type="text"
                         placeholder="Search countries..."
-                        className="py-2 px-4 pr-10 bg-primary text-default decoration-default border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                        className="py-2 px-4 pr-10 bg-primary text-default decoration-default border rounded-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                 </div>
             </div>
@@ -54,7 +54,7 @@ export default function CountriesList({ onClick }: { onClick: (data: { country: 
                         <div
                             onClick={() => { setSelectedCountry(country.name); onClick({ country: country.name, icon: country.emoji }); }}
                             key={index}
-                            className={`cursor-pointer hover:bg-accent/10 bg-primary  flex-shrink-0 w-48 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow snap-start ${selectedCountry === country.name ? 'bg-primary' : 'bg-card'}`}
+                            className={`cursor-pointer hover:bg-accent/50 bg-primary  flex-shrink-0 w-48 p-4 rounded-sm shadow-sm hover:shadow-md transition-shadow snap-start ${selectedCountry === country.name ? 'bg-primary' : 'bg-card'}`}
                         >
                             <img src={country.image} alt={country.name} className="w-16 h-16 mx-auto mb-2" />
                             <div className="text-center">

@@ -11,14 +11,11 @@
   /* zinc-500 equivalent RGB */
   --color-secondary: rgb(161 161 170);
   /* zinc-400 equivalent RGB */
-  --color-accent: rgb(99 102 241);
+  --color-accent: rgb(35, 35, 35);
   /* indigo-500 equivalent RGB */
   --color-text-default: rgb(36, 36, 36);
   /* zinc-900 equivalent RGB */
   --color-background-default: rgb(250 250 250);
-  /* zinc-50 equivalent RGB */
-
-  --color-text-decoration: rgb(99 102 241);
 }
 
 /* Dark Theme */
@@ -32,7 +29,6 @@
   --color-text-default: rgb(244 244 245);
   /* zinc-100 equivalent RGB */
   --color-background-default: rgb(39 39 42);
-  /* zinc-800 equivalent RGB */
 }
 
 /* Light Theme */
@@ -41,26 +37,24 @@
   /* zinc-600 equivalent RGB */
   --color-secondary: rgb(212 212 216);
   /* zinc-300 equivalent RGB */
-  --color-accent: rgb(79 70 229);
+  --color-accent: rgb(29, 1, 214);
   /* indigo-600 equivalent RGB */
   --color-text-default: rgb(39 39 42);
   /* zinc-800 equivalent RGB */
   --color-background-default: rgb(250 250 250);
-  /* zinc-50 equivalent RGB */
 }
 
 /* Fancy Theme - Indigo & Purple */
 [data-theme='fancy'] {
-  --color-primary: rgb(79 70 229);
+  --color-primary: rgb(221, 70, 229);
   /* indigo-600 equivalent RGB */
   --color-secondary: rgb(147 51 234);
-  /* purple-600 equivalent RGB */
-  --color-accent: rgb(192 132 252);
+  /* indigo-600 equivalent RGB */
+  --color-accent: rgb(147 51 234);
   /* purple-400 equivalent RGB */
   --color-text-default: rgb(244 244 245);
   /* zinc-100 equivalent RGB */
-  --color-background-default: rgb(55 48 163);
-  /* indigo-800 equivalent RGB */
+  --color-background-default: rgb(109, 48, 163);
 }
 
 /*
@@ -96,4 +90,9 @@ body {
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* smooth animation */
+*{
+  transition: all 0.1s ease-in-out;
 }
