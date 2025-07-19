@@ -1,9 +1,10 @@
 import { ThemeSwitcher } from "../components/SwitchThemes";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import countries from "../data/listofcountries.json";
 import TradeconAPI from "../services/TradeconAPI";
+import { createChart, ColorType, LineSeries } from 'lightweight-charts';
 
-// Define the type for indicator data
+// Define the types for indicator data
 interface Indicator {
     Country: string;
     Category: string;
@@ -17,21 +18,36 @@ interface Indicator {
     Frequency: string;
     Source: string;
     URL: string;
+    HistoricalDataSymbol?: string;
     [key: string]: any; // For any other properties
+}
+
+interface HistoricalData {
+    Country: string;
+    Category: string;
+    DateTime: string;
+    Value: number;
+    Frequency: string;
 }
 
 export default function Home() {
     const [indicators, setIndicators] = useState<Indicator[]>([]);
     const [selectedCountry, setSelectedCountry] = useState<string>("");
     const [loading, setLoading] = useState(false);
-
+    const [historicalData, setHistoricalData] = useState<HistoricalData[]>([]);
+    const [selectedIndicator, setSelectedIndicator] = useState<string>("");
+    const [chartLoading, setChartLoading] = useState(false);
+    
+    const chartContainerRef = useRef<HTMLDivElement>(null);
+    
     function getDataByCountry(country: string) {
         setLoading(true);
         setSelectedCountry(country);
+        setHistoricalData([]);
+        setSelectedIndicator("");
         
         TradeconAPI.getIndicatorsByCountry(country)
             .then(data => {
-                console.log('Country Data:', data);
                 setIndicators(data);
             })
             .catch(error => {
@@ -42,10 +58,77 @@ export default function Home() {
             });
     }
 
+    function getHistoricalData(indicator: Indicator) {
+        setChartLoading(true);
+        setSelectedIndicator(indicator.Category);
+        
+        TradeconAPI.getHistoricalIndicator(selectedCountry, indicator.Category.toLowerCase())
+            .then(data => {
+                console.log('Historical Data:', data);
+                setHistoricalData(data);
+            })
+            .catch(error => {
+                console.error('Error fetching historical data:', error);
+            })
+            .finally(() => {
+                setChartLoading(false);
+            });
+    }
+
     // Format date from ISO string
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString();
     };
+    
+    // Initialize and update chart when historical data changes
+    useEffect(() => {
+        if (!historicalData.length || !chartContainerRef.current) return;
+
+        chartContainerRef.current.innerHTML = ''; // Clear previous chart
+        
+        const chartOptions = {
+            width: chartContainerRef.current.clientWidth,
+            height: 400,
+            layout: {
+                background: { type: ColorType.Solid, color: 'transparent' },
+                textColor: 'rgba(33, 56, 77, 1)',
+            },
+            grid: {
+                vertLines: {
+                    color: 'rgba(197, 203, 206, 0.4)',
+                },
+                horzLines: {
+                    color: 'rgba(197, 203, 206, 0.4)',
+                },
+            },
+            timeScale: {
+                timeVisible: true,
+                secondsVisible: false,
+            },
+            rightPriceScale: {
+                borderColor: 'rgba(197, 203, 206, 1)',
+            },
+        };
+        
+        // Create chart instance
+        const chart = createChart(chartContainerRef.current, chartOptions) as any;
+        if(chart=== null) {
+            return;
+        }
+
+        // Format data for the chart
+        const formattedData = historicalData.map(item => ({
+            time: item.DateTime.split('T')[0], // Format: YYYY-MM-DD
+            value: item.Value
+        }));
+        
+        // Add line series to the chart
+        const lineSeries = chart?.addSeries?.(LineSeries);
+        
+        // Set the data
+        lineSeries.setData(formattedData);
+        
+    }, [historicalData]);
 
     return (
         <div className="min-h-screen bg-background-default text-text-default transition-colors duration-300">
@@ -66,9 +149,7 @@ export default function Home() {
                                 placeholder="Search countries..."
                                 className="py-2 px-4 pr-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                             />
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 absolute right-3 top-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
+                            
                         </div>
                     </div>
 
@@ -88,23 +169,35 @@ export default function Home() {
                                 </div>
                             ))}
                         </div>
-
-                        <div className="flex justify-between mt-4">
-                            <button className="bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-lg flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-                                </svg>
-                                Previous
-                            </button>
-                            <button className="bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-lg flex items-center">
-                                Next
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                                </svg>
-                            </button>
-                        </div>
                     </div>
                 </section>
+
+                {/* Historical Data Chart Section */}
+                {selectedIndicator && (
+                    <section className="mb-8">
+                        <h2 className="text-2xl font-bold mb-4">
+                            {selectedIndicator} Historical Data for {selectedCountry}
+                        </h2>
+                        
+                        {chartLoading && (
+                            <div className="flex justify-center items-center h-80">
+                                <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
+                            </div>
+                        )}
+
+                        {!chartLoading && historicalData.length > 0 && (
+                            <div className="bg-card p-4 rounded-lg shadow-md">
+                                <div ref={chartContainerRef} className="w-full h-[400px]"></div>
+                            </div>
+                        )} 
+
+                        {!chartLoading && historicalData.length === 0 && (
+                            <div className="text-center p-8 bg-card rounded-lg">
+                                <p>No historical data available for {selectedIndicator}</p>
+                            </div>
+                        )}
+                    </section>
+                )}
 
                 {/* Indicators Table Section */}
                 {selectedCountry && (
@@ -130,7 +223,11 @@ export default function Home() {
                                     </thead>
                                     <tbody className="divide-y divide-gray-200">
                                         {indicators.map((indicator, index) => (
-                                            <tr key={index} className="hover:bg-primary/5">
+                                            <tr 
+                                                key={index} 
+                                                onClick={() => getHistoricalData(indicator)} 
+                                                className={`hover:bg-primary/5 cursor-pointer ${selectedIndicator === indicator.Category ? 'bg-primary/10' : ''}`}
+                                            >
                                                 <td className="py-3 px-4">
                                                     <div className="font-medium">{indicator.Category}</div>
                                                     <div className="text-sm text-muted">{indicator.CategoryGroup}</div>
