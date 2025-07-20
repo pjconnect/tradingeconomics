@@ -1,8 +1,7 @@
 export default function About() {
     return (
         <div>
-            <h1>Hello there,</h1>
-            <p>Contact: pasindu.connect@gmail.com</p>
+            <h1>About Us - under constructuion</h1>
         </div>
     );
 }

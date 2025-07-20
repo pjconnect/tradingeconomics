@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import SearchAnything from '../components/SearchAnything';
+import React, { useState } from "react";
+import SearchAnything from "../components/SearchAnything";
 
 const Search: React.FC = () => {
     return (
@@ -7,15 +7,11 @@ const Search: React.FC = () => {
             {/* Search Section */}
             <SearchAnything />
 
-            {/* Results Section */}
-            <div className="mt-8">
-                <h2 className="text-2xl font-bold mb-4">Search Results</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {/* Results will be displayed here */}
-                </div>
-            </div>
+            {/* Cross-Origin not Auth */}
+            <p className="text-center text-accent">
+                Sorry, the search function is not working currently.
+            </p>
         </main>
-
     );
 };
 

@@ -33,7 +33,7 @@ const MenuBar: React.FC = () => {
                                 Search
                             </NavLink>
                         </li>
-                        <li>
+                        {/* <li>
                             <NavLink
                                 to="/about"
                                 className={({ isActive }) =>
@@ -44,7 +44,7 @@ const MenuBar: React.FC = () => {
                             >
                                 About
                             </NavLink>
-                        </li>
+                        </li> */}
                     </ul>
                 </nav>
 

@@ -1,13 +1,9 @@
-import { ThemeSwitcher } from "../components/SwitchThemes";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import TradeconAPI from "../services/TradeconAPI";
-import Logo from "../components/Logo";
 import CountriesList from "../components/CountriesList";
 import type { HistoricalData, Indicator } from "../types";
-import Footer from "../components/Footer";
 import LightChart from "../components/LightChart";
 import IndicatorsTable from "../components/IndicatorsTable";
-import SearchAnything from "../components/SearchAnything";
 
 export default function Home() {
     const [loading, setLoading] = useState(false);

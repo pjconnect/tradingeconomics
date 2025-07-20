@@ -24,7 +24,7 @@ export default function CountriesList({ onClick }: { onClick: (data: { country: 
                         placeholder="Search countries..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="py-2 px-4 w-full pr-10 bg-primary text-default decoration-default border border-accent rounded-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                        className="py-2 px-4 w-full pr-10 bg-primary text-default decoration-default border border-accent rounded-full focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                 </div>
             </div>

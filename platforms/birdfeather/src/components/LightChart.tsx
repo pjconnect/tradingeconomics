@@ -29,6 +29,7 @@ const LightChart: React.FC<LightChartProps> = ({
             horzLines: { color: '#46464680' },
         },
     } as DeepPartial<TimeChartOptions>;
+    
 
     // Initialize and update chart when historical data changes
     useEffect(() => {
