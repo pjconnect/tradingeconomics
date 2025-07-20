@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import SearchAnything from "../components/SearchAnything";
 
 const Search: React.FC = () => {
