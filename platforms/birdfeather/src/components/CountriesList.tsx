@@ -14,7 +14,7 @@ export default function CountriesList({ onClick }: { onClick: (data: { country: 
     return (
         <section className="">
             <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center mb-4">
-                <div className="w-full md:w-1/3">
+                <div className="w-full md:w-1/3 p-4">
                     <h2 className="text-2xl">Select a Country</h2>
                     <p className="text-sm opacity-60">Choose a country to view its economic indicators</p>
                 </div>
@@ -60,7 +60,7 @@ export default function CountriesList({ onClick }: { onClick: (data: { country: 
                         <div
                             onClick={() => { setSelectedCountry(country.name); onClick({ country: country.name, icon: country.emoji }); }}
                             key={index}
-                            className={`cursor-pointer hover:bg-accent/50 bg-primary  flex-shrink-0 w-48 p-4 rounded-sm shadow-sm hover:shadow-md transition-shadow snap-start ${selectedCountry === country.name ? 'bg-primary' : 'bg-card'}`}
+                            className={`cursor-pointer hover:bg-secondary/50 bg-primary  flex-shrink-0 w-48 p-4 rounded-sm shadow-sm hover:shadow-md transition-shadow snap-start ${selectedCountry === country.name ? 'bg-primary' : 'bg-card'}`}
                         >
                             <img src={country.image} alt={country.name} className="w-16 h-16 mx-auto mb-2" />
                             <div className="text-center">

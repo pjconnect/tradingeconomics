@@ -2,6 +2,7 @@ import { useRef, useEffect, Fragment, useState } from "react";
 import { createChart, ColorType, LineSeries, type TimeChartOptions, type DeepPartial } from 'lightweight-charts';
 import type { HistoricalData } from "../types";
 import LoadingSpinner from "./LoadingSpinner";
+import { useTheme } from "../context/ThemeContext";
 
 interface LightChartProps {
     historicalData: HistoricalData[];
@@ -16,6 +17,18 @@ const LightChart: React.FC<LightChartProps> = ({
 }) => {
     const chartContainerRef = useRef<HTMLDivElement>(null);
     const chartRef = useRef<any>(null);
+    const { theme } = useTheme();
+
+    const defaultChartOptions = {
+        layout: {
+            background: { type: ColorType.Solid, color: 'transparent' },
+            textColor: theme == 'light' ? 'black' : 'white',
+        },
+        grid: {
+            vertLines: { color: '#46464680' },
+            horzLines: { color: '#46464680' },
+        },
+    } as DeepPartial<TimeChartOptions>;
 
     // Initialize and update chart when historical data changes
     useEffect(() => {
@@ -32,7 +45,7 @@ const LightChart: React.FC<LightChartProps> = ({
         // Create chart instance
         const chart = createChart(chartContainerRef.current, chartOptions) as any;
         chartRef.current = chart;
-        
+
         if (chart === null) {
             return;
         }
@@ -52,8 +65,8 @@ const LightChart: React.FC<LightChartProps> = ({
         // Add resize event listener
         const handleResize = () => {
             if (chartContainerRef.current && chartRef.current) {
-                chartRef.current.applyOptions({ 
-                    width: chartContainerRef.current.clientWidth 
+                chartRef.current.applyOptions({
+                    width: chartContainerRef.current.clientWidth
                 });
             }
         };
@@ -94,21 +107,10 @@ const LightChart: React.FC<LightChartProps> = ({
             <div ref={chartContainerRef} className="w-full h-[400px]"></div>
         </div>
     );
+
+
 };
 
-const defaultChartOptions = {
-    layout: {
-        background: { type: ColorType.Solid, color: 'transparent' },
-        textColor: 'text-default/50',
-    },
-    grid: {
-        vertLines: {
-            color: 'text-default/20',
-        },
-        horzLines: {
-            color: 'text-default/20',
-        },
-    },
-} as DeepPartial<TimeChartOptions>;
+
 
 export default LightChart;
