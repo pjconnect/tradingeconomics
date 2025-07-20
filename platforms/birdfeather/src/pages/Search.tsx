@@ -11,7 +11,6 @@ const Search: React.FC = () => {
             <p className="text-center text-accent">
                 Sorry, the search function is not working currently.
             </p>
-            <p className="text-center text-red-400 text-sm uppercase">Error Type: CORS</p>
         </main>
     );
 };
