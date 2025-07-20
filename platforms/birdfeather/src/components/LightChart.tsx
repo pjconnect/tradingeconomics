@@ -1,4 +1,4 @@
-import { useRef, useEffect, Fragment, useState } from "react";
+import { useRef, useEffect, Fragment } from "react";
 import { createChart, ColorType, LineSeries, type TimeChartOptions, type DeepPartial } from 'lightweight-charts';
 import type { HistoricalData } from "../types";
 import LoadingSpinner from "./LoadingSpinner";
@@ -51,6 +51,7 @@ const LightChart: React.FC<LightChartProps> = ({
         }
 
         // Format data for the chart
+        historicalData.pop(); //temp fix last item empty, so the chart won't jump to value 0.
         const formattedData = historicalData.map(item => ({
             time: item.DateTime.split('T')[0], // Format: YYYY-MM-DD
             value: item.Value

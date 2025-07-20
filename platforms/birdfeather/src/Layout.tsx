@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import Logo from './components/Logo';
 import MenuBar from './components/MenuBar';
+import Footer from './components/Footer';
 
 interface LayoutProps {
     children: ReactNode;
@@ -10,8 +11,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     return (
         <div className="bg-background-default text-text-default transition-colors duration-300">
             <div className="min-h-screen">
-                <header className="bg-primary p-4 shadow-lg">
-                    <div className="container mx-auto flex justify-between items-center">
+                <header className="bg-primary shadow-lg">
+                    <div className="container p-4 mx-auto flex justify-between items-center">
                         <Logo />
                         <MenuBar />
                     </div>
@@ -20,6 +21,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     {children}
                 </main>
             </div>
+            <Footer />
         </div>
     );
 };
