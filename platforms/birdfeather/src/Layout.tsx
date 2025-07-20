@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import Logo from './components/Logo';
-import { ThemeSwitcher } from './components/SwitchThemes';
+import MenuBar from './components/MenuBar';
 
 interface LayoutProps {
     children: ReactNode;
@@ -13,7 +13,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <header className="bg-primary p-4 shadow-lg">
                     <div className="container mx-auto flex justify-between items-center">
                         <Logo />
-                        <ThemeSwitcher />
+                        <MenuBar />
                     </div>
                 </header>
                 <main className="container mx-auto p-4">
